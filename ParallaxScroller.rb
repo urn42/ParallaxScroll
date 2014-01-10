@@ -12,13 +12,13 @@ class GameWindow < Gosu::Window
     @font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 
     @parallax = Array.new
-    @parallax.push(BGLayer.new(self, 500, 0xff101010))
-    @parallax.push(BGLayer.new(self, 250, 0xff303030))
-    @parallax.push(BGLayer.new(self, 250, 0xff606060))
-    @parallax.push(BGLayer.new(self, 250, 0xff909090))
-    @parallax.push(BGLayer.new(self, 250, 0xffc0c0c0))
-    @parallax.push(BGLayer.new(self, 100, 0xfff0f0f0))
-    @parallax.push(BGLayer.new(self, 50, 0xffffffff))
+    @parallax.push(BGLayer.new(self, 500, 0xff101010, 10))
+    @parallax.push(BGLayer.new(self, 250, 0xff303030, 10))
+    @parallax.push(BGLayer.new(self, 250, 0xff606060, 20))
+    @parallax.push(BGLayer.new(self, 250, 0xff909090, 20))
+    @parallax.push(BGLayer.new(self, 250, 0xffc0c0c0, 20))
+    @parallax.push(BGLayer.new(self, 100, 0xfff0f0f0, 30))
+    @parallax.push(BGLayer.new(self, 50, 0xffffffff, 40))
 
     @player = Player.new(self)
     @player.warp(self.width / 2, self.height / 2)
@@ -57,19 +57,20 @@ class GameWindow < Gosu::Window
 end
 
 class BGLayer
-  def initialize(window, mote_count, mote_color)
+  def initialize(window, mote_count, mote_color, mote_size)
     @motes = Array.new
     @mote_color = mote_color
+    @mote_size = mote_size
     @window = window
     @a = @vel_x = @vel_y = 0.0
     while @motes.size < mote_count
-      @motes.push(Mote.new(window, ".", @mote_color, rand(window.width), rand(window.height)))
+      @motes.push(Mote.new(window, ".", @mote_color, mote_size, rand(window.width), rand(window.height)))
     end
   end
 
   def accelerate(angle)
-    @vel_x += Gosu::offset_x(angle, 0.5)
-    @vel_y += Gosu::offset_y(angle, 0.5)
+    @vel_x += Gosu::offset_x(angle, 0.09)
+    @vel_y += Gosu::offset_y(angle, 0.09)
   end
 
   def draw
@@ -88,13 +89,13 @@ class Mote
 
   @color = nil
 
-  def initialize(window, text, mote_color, x, y, angle = 0)
+  def initialize(window, text, mote_color, mote_size, x, y, angle = 0)
     @x = x
     @y = y
     @a = angle
     @rot_vel = 0
     @window = window
-    @image = Gosu::Image.from_text(@window, text, Gosu::default_font_name, 30, 10, 200, :center)
+    @image = Gosu::Image.from_text(@window, text, Gosu::default_font_name, mote_size, 10, 200, :center)
     @color = mote_color
   end
 
